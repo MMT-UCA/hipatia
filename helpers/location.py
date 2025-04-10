@@ -11,10 +11,12 @@ class Location:
   """
   Location
   """
-  def __init__(self, country, city, region_code, climate_reference_city_latitude, climate_reference_city_longitude):
+  def __init__(self, country, city, region_code, time_zone,
+               climate_reference_city_latitude, climate_reference_city_longitude):
     self._country = country
     self._city = city
     self._region_code = region_code
+    self._time_zone = time_zone
     self._climate_reference_city_latitude = climate_reference_city_latitude
     self._climate_reference_city_longitude = climate_reference_city_longitude
 
@@ -38,6 +40,13 @@ class Location:
     Get region
     """
     return self._region_code
+
+  @property
+  def time_zone(self):
+    """
+    Get time zone
+    """
+    return self._time_zone
 
   @property
   def climate_reference_city_latitude(self):

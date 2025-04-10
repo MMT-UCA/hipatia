@@ -14,9 +14,9 @@ from trimesh import Trimesh
 from trimesh import intersections
 import numpy as np
 
-from hub.city_model_structure.attributes.polygon import Polygon
-from hub.city_model_structure.attributes.polyhedron import Polyhedron
-from hub.helpers.location import Location
+from helpers.attributes.polygon import Polygon
+from helpers.attributes.polyhedron import Polyhedron
+from helpers.location import Location
 
 
 class MapPoint:

@@ -7,7 +7,7 @@ Project Coder Guille Gutierrez guillermo.gutierrezmorote@concordia.ca
 
 import uuid
 from typing import List, TypeVar
-from central_data_model.attributes.time_series import TimeSeries
+from helpers.attributes.time_series import TimeSeries
 Edge = TypeVar('Edge')
 
 

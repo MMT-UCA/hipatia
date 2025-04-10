@@ -12,9 +12,9 @@ import math
 import uuid
 from typing import List, Union
 import numpy as np
-from central_data_model.attributes.polygon import Polygon
-from central_data_model.attributes.plane import Plane
-from central_data_model.attributes.point import Point
+from helpers.attributes.polygon import Polygon
+from helpers.attributes.plane import Plane
+from helpers.attributes.point import Point
 from central_data_model.building_demand.thermal_boundary import ThermalBoundary
 import helpers.constants as cte
 

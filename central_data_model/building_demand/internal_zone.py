@@ -11,7 +11,7 @@ from central_data_model.building_demand.usage import Usage
 from central_data_model.building_demand.thermal_archetype import ThermalArchetype
 from central_data_model.building_demand.thermal_zone import ThermalZone
 from central_data_model.building_demand.thermal_boundary import ThermalBoundary
-from central_data_model.attributes.polyhedron import Polyhedron
+from helpers.attributes.polyhedron import Polyhedron
 
 
 class InternalZone:

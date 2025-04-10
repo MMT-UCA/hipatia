@@ -11,7 +11,7 @@ from typing import List, Union, TypeVar
 
 import numpy as np
 import helpers.constants as cte
-from central_data_model.attributes.polyhedron import Polyhedron
+from helpers.attributes.polyhedron import Polyhedron
 from central_data_model.building_demand.internal_zone import InternalZone
 from central_data_model.building_demand.thermal_zone import ThermalZone
 from central_data_model.building_demand.surface import Surface

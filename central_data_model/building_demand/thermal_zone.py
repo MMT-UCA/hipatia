@@ -17,7 +17,7 @@ from central_data_model.building_demand.lighting import Lighting
 from central_data_model.building_demand.internal_gain import InternalGain
 from central_data_model.building_demand.thermal_control import ThermalControl
 from central_data_model.building_demand.domestic_hot_water import DomesticHotWater
-from central_data_model.attributes.schedule import Schedule
+from helpers.attributes.schedule import Schedule
 import helpers.constants as cte
 
 ThermalBoundary = TypeVar('ThermalBoundary')

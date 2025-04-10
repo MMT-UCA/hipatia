@@ -6,7 +6,7 @@ Project Coder Guille Gutierrez guillermo.gutierrezmorote@concordia.ca
 """
 
 from typing import Union, List
-from central_data_model.attributes.schedule import Schedule
+from helpers.attributes.schedule import Schedule
 
 
 class InternalGain:

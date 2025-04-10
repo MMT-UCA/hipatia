@@ -6,7 +6,7 @@ Project Coder Pilar Monsalvete Alvarez de Uribarri pilar.monsalvete@concordia.ca
 """
 
 from typing import List
-from central_data_model.attributes.record import Record
+from helpers.attributes.record import Record
 
 
 class TimeSeries:

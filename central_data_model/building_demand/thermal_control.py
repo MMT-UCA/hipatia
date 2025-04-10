@@ -6,7 +6,7 @@ Project Coder Pilar Monsalvete Alvarez de Uribarri pilar.monsalvete@concordia.ca
 """
 from math import inf
 from typing import Union, List
-from central_data_model.attributes.schedule import Schedule
+from helpers.attributes.schedule import Schedule
 
 
 class ThermalControl:

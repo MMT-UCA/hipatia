@@ -19,8 +19,8 @@ import trimesh.intersections
 from shapely.geometry.polygon import Polygon as shapley_polygon
 from trimesh import Trimesh
 
-from central_data_model.attributes.plane import Plane
-from central_data_model.attributes.point import Point
+from helpers.attributes.plane import Plane
+from helpers.attributes.point import Point
 
 
 class Polygon:
