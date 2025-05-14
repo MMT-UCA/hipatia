@@ -125,7 +125,7 @@ class Geojson:
           function = str(feature['properties'][self._function_field])
         feature_type = None
         if self._type_field is not None:
-          feature_type = str(feature['properties'][self._function_field])
+          feature_type = feature['properties'][self._type_field]
         geometry = feature['geometry']
         if 'id' in feature:
           building_name = feature['id']
@@ -139,14 +139,6 @@ class Geojson:
                                                year_of_construction,
                                                extrusion_height,
                                                feature_type))
-
-        elif str(geometry['type']).lower() == 'multipolygon':
-          buildings.append(self._parse_multi_polygon(geometry['coordinates'],
-                                                     building_name,
-                                                     function,
-                                                     year_of_construction,
-                                                     extrusion_height,
-                                                     feature_type))
         else:
           raise NotImplementedError(f'Geojson geometry type [{geometry["type"]}] unknown')
       # todo: this is only valid for one district per city, refactor!!
@@ -205,7 +197,7 @@ class Geojson:
         surfaces[-1] = Surface(polygon, polygon)
     if len(surfaces) > 1:
       raise ValueError('too many surfaces!!!!')
-    if feature_type is "building":
+    if feature_type == "building":
       building = Building(f'{building_name}', surfaces, year_of_construction, function)
       if extrusion_height == 0:
         return building
@@ -242,7 +234,7 @@ class Geojson:
         building = Building(f'{building_name}', surfaces, year_of_construction, function)
         building.volume = volume
         return building
-    elif feature_type is "boundaries":
+    elif feature_type == "boundaries":
       # todo: read!!!
       print("Read boundaries")
     else:
