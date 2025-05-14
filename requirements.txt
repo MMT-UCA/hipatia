@@ -1,2 +1,8 @@
-pyfoam~=2023.7
-numpy~=2.2.4
+hub==3.0.1
+numpy==2.2.5
+Pillow==11.2.1
+PyFoam==2023.7
+pyproj==3.7.1
+Shapely==2.1.0
+trimesh==4.6.5
+xmltodict==0.14.2
