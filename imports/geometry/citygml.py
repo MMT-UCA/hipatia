@@ -79,7 +79,7 @@ class CityGml:
             self._srs_name = envelope['@srsName']
           else:
             # If not coordinate system given assuming hub standard
-            self._srs_name = "EPSG:26911"
+            self._srs_name = "EPSG:2062"
       else:
         # get the boundary from the city objects instead
         for city_object_member in self._gml['CityModel']['cityObjectMember']:

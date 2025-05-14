@@ -11,7 +11,6 @@ from typing import List, Union, TypeVar
 
 import numpy as np
 import helpers.constants as cte
-from helpers.attributes.polyhedron import Polyhedron
 from central_data_model.building_demand.internal_zone import InternalZone
 from central_data_model.building_demand.thermal_zone import ThermalZone
 from central_data_model.building_demand.surface import Surface
@@ -38,7 +37,6 @@ class Building(CityObject):
     self._roof_type = None
     self._internal_zones = None
     self._thermal_zones_from_internal_zones = None
-    self._shell = None
     self._aliases = []
     self._type = 'building'
     self._cold_water_temperature = {}
@@ -86,23 +84,6 @@ class Building(CityObject):
         self._interior_slabs.append(surface)
       else:
         logging.error('Building %s [%s] has an unexpected surface type %s.', self.name, self.aliases, surface.type)
-
-  @property
-  def shell(self) -> Polyhedron:
-    """
-    Get building's external polyhedron
-    :return: [Polyhedron]
-    """
-    polygons = []
-    for surface in self.surfaces:
-      if surface.type is not cte.INTERIOR_WALL:
-        polygons.append(surface.solid_polygon)
-        if surface.holes_polygons is not None:
-          for hole in surface.holes_polygons:
-            polygons.append(hole)
-    if self._shell is None:
-      self._shell = Polyhedron(polygons)
-    return self._shell
 
   @property
   def internal_zones(self) -> List[InternalZone]:

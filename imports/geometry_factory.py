@@ -18,13 +18,15 @@ class GeometryFactory:
                path,
                height_field=None,
                year_of_construction_field=None,
-               function_field=None):
+               function_field=None,
+               type_field=None):
     self._file_type = '_' + file_type.lower()
     validate_import_export_type(GeometryFactory, file_type)
     self._path = path
     self._height_field = height_field
     self._year_of_construction_field = year_of_construction_field
     self._function_field = function_field
+    self._type_field = type_field
 
   @property
   def _geojson(self) -> City:
@@ -35,7 +37,8 @@ class GeometryFactory:
     return Geojson(self._path,
                    self._height_field,
                    self._year_of_construction_field,
-                   self._function_field).city
+                   self._function_field,
+                   self._type_field).city
 
   @property
   def city(self) -> City:

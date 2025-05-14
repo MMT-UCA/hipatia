@@ -11,6 +11,7 @@ from typing import List, Union
 from central_data_model.level_of_detail import LevelOfDetail
 from central_data_model.building_demand.surface import Surface
 from helpers.attributes.polyhedron import Polyhedron
+from helpers.configuration_helper import ConfigurationHelper
 
 
 class CityObject:
@@ -26,12 +27,12 @@ class CityObject:
     self._city_object_upper_corner = None
     self._detailed_polyhedron = None
     self._simplified_polyhedron = None
-    self._min_x = 1.7976931348623157e+308
-    self._min_y = 1.7976931348623157e+308
-    self._min_z = 1.7976931348623157e+308
-    self._max_x = -1.7976931348623157e+308
-    self._max_y = -1.7976931348623157e+308
-    self._max_z = -1.7976931348623157e+308
+    self._min_x = ConfigurationHelper().max_coordinate
+    self._min_y = ConfigurationHelper().max_coordinate
+    self._min_z = ConfigurationHelper().max_coordinate
+    self._max_x = ConfigurationHelper().min_coordinate
+    self._max_y = ConfigurationHelper().min_coordinate
+    self._max_z = ConfigurationHelper().min_coordinate
     self._centroid = None
     self._volume = None
     self._external_temperature = {}
