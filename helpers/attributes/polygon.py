@@ -39,6 +39,7 @@ class Polygon:
     self._vertices = None
     self._faces = None
     self._plane = None
+    self._center_of_gravity = None
 
   @property
   def points(self) -> List[Point]:
@@ -182,7 +183,7 @@ class Polygon:
   @staticmethod
   def triangle_mesh(vertices, normal) -> Trimesh:
     """
-    Get the triangulated mesh for the polygon
+    Get the triangulated mesh of the polygon
     :return: Trimesh
     """
     min_x = 1e16
@@ -421,3 +422,30 @@ class Polygon:
       if i not in face and distance == 0:
         return i
     return -1
+
+  @staticmethod
+  def _triangle_centroid(triangle):
+    x = 0
+    y = 0
+    z = 0
+    for vertex in triangle.vertices:
+      x += vertex[0]
+      y += vertex[1]
+      z += vertex[2]
+    centroid = [x/3, y/3, z/3]
+    return centroid
+
+  @property
+  def center_of_gravity(self) -> Point:
+    area_tot = 0
+    area_times_x = 0
+    area_times_y = 0
+    area_times_z = 0
+    for triangle in self.triangles:
+      area_tot += triangle.area
+      centroid = self._triangle_centroid(triangle)
+      area_times_x += triangle.area * centroid[0]
+      area_times_y += triangle.area * centroid[1]
+      area_times_z += triangle.area * centroid[2]
+    self._center_of_gravity = Point([area_times_x/area_tot, area_times_y/area_tot, area_times_z/area_tot])
+    return self._center_of_gravity

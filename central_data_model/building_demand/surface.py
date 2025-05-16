@@ -24,7 +24,8 @@ class Surface:
   Surface class
   """
 
-  def __init__(self, solid_polygon, perimeter_polygon, holes_polygons=None, name=None, surface_type=None):
+  def __init__(self, solid_polygon, perimeter_polygon, holes_polygons=None, name=None, surface_type=None,
+               building_name=None):
     self._type = surface_type
     self._name = name
     self._id = None
@@ -37,6 +38,7 @@ class Surface:
     self._perimeter_polygon = perimeter_polygon
     self._holes_polygons = holes_polygons
     self._solid_polygon = solid_polygon
+    self._building_name = building_name
     self._short_wave_reflectance = None
     self._long_wave_emittance = None
     self._inverse = None
@@ -336,34 +338,9 @@ class Surface:
     self._percentage_shared = value
 
   @property
-  def solar_collectors_area_reduction_factor(self):
+  def belonging_building_name(self):
     """
-    Get factor area collector per surface area if set or calculate using Romero Rodriguez, L. et al (2017) model if not
-    :return: float
+    Get the name of the building the surface belongs to
+    :return: str
     """
-    if self._solar_collectors_area_reduction_factor is None:
-      if self.type == cte.ROOF:
-        _protected_building_restriction = 1
-        # 10 degrees range
-        if abs(math.sin(self.inclination)) < 0.17:
-          # horizontal
-          _construction_restriction = 0.8
-          _separation_of_panels = 0.46
-          _shadow_between_panels = 0.7
-        else:
-          # tilted
-          _construction_restriction = 0.9
-          _separation_of_panels = 0.9
-          _shadow_between_panels = 1
-        self._solar_collectors_area_reduction_factor = (
-            _protected_building_restriction * _construction_restriction * _separation_of_panels * _shadow_between_panels
-        )
-    return self._solar_collectors_area_reduction_factor
-
-  @solar_collectors_area_reduction_factor.setter
-  def solar_collectors_area_reduction_factor(self, value):
-    """
-    Set factor area collector per surface area
-    :param value: float
-    """
-    self._solar_collectors_area_reduction_factor = value
+    return self._building_name

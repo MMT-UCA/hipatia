@@ -173,7 +173,7 @@ class Geojson:
       points = igh.invert_points(points)
       polygon = Polygon(points)
       polygon.area = igh.ground_area(points)
-      surface = Surface(polygon, polygon)
+      surface = Surface(polygon, polygon, building_name=building_name)
       if surface.type == cte.GROUND:
         surfaces.append(surface)
       else:
@@ -194,7 +194,7 @@ class Geojson:
         coordinates = prefix_coordinates + hole + trail_coordinates
         polygon = Polygon(coordinates)
         polygon.area = igh.ground_area(coordinates)
-        surfaces[-1] = Surface(polygon, polygon)
+        surfaces[-1] = Surface(polygon, polygon, building_name=building_name)
     if len(surfaces) > 1:
       raise ValueError('too many surfaces!!!!')
     if feature_type == "building":
@@ -213,7 +213,7 @@ class Geojson:
           roof_coordinates.insert(0, roof_coordinate)
         roof_polygon = Polygon(roof_coordinates)
         roof_polygon.area = ground.solid_polygon.area
-        roof = Surface(roof_polygon, roof_polygon)
+        roof = Surface(roof_polygon, roof_polygon, building_name=building_name)
         surfaces.append(roof)
         # adding a wall means add the point coordinates and the next point coordinates with Z's height and 0
         coordinates_length = len(roof.solid_polygon.coordinates)
@@ -229,7 +229,7 @@ class Geojson:
             np.array([coordinate[0], coordinate[1], coordinate[2]])
           ]
           polygon = Polygon(wall_coordinates)
-          wall = Surface(polygon, polygon)
+          wall = Surface(polygon, polygon, building_name=building_name)
           surfaces.append(wall)
         building = Building(f'{building_name}', surfaces, year_of_construction, function)
         building.volume = volume
@@ -253,7 +253,7 @@ class Geojson:
         points = igh.invert_points(points)
         polygon = Polygon(points)
         polygon.area = igh.ground_area(points)
-        surface = Surface(polygon, polygon)
+        surface = Surface(polygon, polygon, building_name=building_name)
         if surface.type == cte.GROUND:
           surfaces.append(surface)
         else:
@@ -273,7 +273,7 @@ class Geojson:
           coordinates = prefix_coordinates + hole + [hole[0]] + trail_coordinates
           polygon = Polygon(coordinates)
           polygon.area = igh.ground_area(coordinates)
-          surfaces[-1] = Surface(polygon, polygon)
+          surfaces[-1] = Surface(polygon, polygon, building_name=building_name)
     building = Building(f'{building_name}', surfaces, year_of_construction, function)
     if extrusion_height == 0:
       return building
@@ -289,7 +289,7 @@ class Geojson:
         roof_coordinates.insert(0, roof_coordinate)
       roof_polygon = Polygon(roof_coordinates)
       roof_polygon.area = ground.solid_polygon.area
-      roof = Surface(roof_polygon, roof_polygon)
+      roof = Surface(roof_polygon, roof_polygon, building_name=building_name)
       surfaces.append(roof)
       # adding a wall means add the point coordinates and the next point coordinates with Z's height and 0
       coordinates_length = len(roof.solid_polygon.coordinates)
@@ -305,7 +305,7 @@ class Geojson:
           np.array([coordinate[0], coordinate[1], coordinate[2]])
         ]
         polygon = Polygon(wall_coordinates)
-        wall = Surface(polygon, polygon)
+        wall = Surface(polygon, polygon, building_name=building_name)
         surfaces.append(wall)
       building = Building(f'{building_name}', surfaces, year_of_construction, function)
       building.volume = volume
