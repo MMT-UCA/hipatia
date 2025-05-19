@@ -1,4 +1,3 @@
-hub==3.0.1
 numpy==2.2.5
 Pillow==11.2.1
 PyFoam==2023.7
