@@ -12,3 +12,5 @@ class ThisModuleDoesNothing:
   @staticmethod
   def do_nothing(name):
     print(f"Well, let´s at least write the building name: {name}")
+
+
