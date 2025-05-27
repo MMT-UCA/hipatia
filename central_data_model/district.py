@@ -100,10 +100,10 @@ class District:
     return self._srs_name
 
   @property
-  def boundaries_weather_data(self) -> WeatherData:
+  def boundaries_weather_data(self) -> [WeatherData]:
     """
     Get the weather data of the boundaries of the district
-    :return: WeatherData
+    :return: [WeatherData]
     """
     return self._boundaries_weather_data
 
@@ -111,15 +111,15 @@ class District:
   def boundaries_weather_data(self, value):
     """
     Set the weather data of the boundaries of the district
-    :param value: WeatherData
+    :param value: [WeatherData]
     """
     self._boundaries_weather_data = value
 
   @property
-  def micro_climate_weather_data(self) -> WeatherData:
+  def micro_climate_weather_data(self) -> [WeatherData]:
     """
     Get the district weather data effected by the micro-climate
-    :return: WeatherData
+    :return: [WeatherData]
     """
     return self._micro_climate_weather_data
 
@@ -127,7 +127,7 @@ class District:
   def micro_climate_weather_data(self, value):
     """
     Set the district weather data effected by the micro-climate
-    :param value: WeatherData
+    :param value: [WeatherData]
     """
     self._micro_climate_weather_data = value
 
