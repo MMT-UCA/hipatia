@@ -8,13 +8,14 @@ from imports.geometry.helpers.imports_geometry_helper import GeometryHelper as i
 
 
 class GeoJsonLOD0(GeoJsonBase):
-  def __init__(self, transformer):
+  def __init__(self, transformer, reference_coordinates):
     self._transformer = transformer
+    self._reference_coordinates = reference_coordinates
 
   def _add_polygon(self, polygon_coordinates, surfaces):
     points = igh.points_from_string(
       igh.remove_last_point_from_string(
-        self._polygon_coordinates_to_3d(polygon_coordinates, self._transformer)
+        self._polygon_coordinates_to_3d(polygon_coordinates, self._transformer, self._reference_coordinates)
       )
     )
     points = igh.invert_points(points)

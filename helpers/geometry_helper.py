@@ -313,6 +313,7 @@ class GeometryHelper:
           city = file_city_name
           region_code = f'{file_country_code}.{admin1_code}.{admin2_code}'
     return Location(country, city, region_code, latitude, longitude)
+    # todo, it seems that this is not coherent with the class Location: country, city, region_code, time_zone
 
   @staticmethod
   def distance_between_points(vertex1, vertex2):

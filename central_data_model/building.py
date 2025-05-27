@@ -16,7 +16,7 @@ from central_data_model.building_demand.thermal_zone import ThermalZone
 from central_data_model.building_demand.surface import Surface
 from central_data_model.city_object import CityObject
 
-City = TypeVar('City')
+District = TypeVar('District')
 
 
 class Building(CityObject):
@@ -433,7 +433,7 @@ class Building(CityObject):
     if self._roof_type is None:
       self._roof_type = 'flat'
       for roof in self.roofs:
-        grads = np.rad2deg(roof.inclination)
+        grads = np.rad2deg(roof.zenith_angle)
         if 355 > grads > 5:
           self._roof_type = 'pitch'
           break
@@ -492,10 +492,10 @@ class Building(CityObject):
       self.city.add_building_alias(self, value)
 
   @property
-  def city(self) -> City:
+  def city(self) -> District:
     """
     Get the city containing the building
-    :return: City
+    :return: District
     """
     return self._city
 

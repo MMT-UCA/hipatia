@@ -33,19 +33,18 @@ class TestHipatiaTemplate(TestCase):
     # 1. file with the geometrical information+
     file = Path(self._example_path / 'buildings.geojson').resolve()
     # 2. The data model is firstly created here with geometrical information
-    city = GeometryFactory('geojson',
-                           path=file,
-                           height_field='height',
-                           year_of_construction_field="yoc",
-                           type_field="feature_type").city
+    district = GeometryFactory('geojson',
+                               path=file,
+                               height_field='height',
+                               year_of_construction_field="yoc",
+                               type_field="feature_type").district
     # 3. If you want to create new objects (or save information in the already created)
     # with info from other files, do it here
 
     # 4. Use the data model to call your module
     this_module_does_nothing = ThisModuleDoesNothing()
-    for building in city.districts[0].buildings:
+    for building in district.buildings:
       this_module_does_nothing.do_nothing(building.name)
 
-    print(city.districts[0].lower_corner)
-    print(city.districts[0].buildings[0].surfaces[0].solid_polygon.coordinates)
-
+    print(district.reference_coordinates)
+    print(f'District area = {district.area} m2')

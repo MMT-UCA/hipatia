@@ -1,39 +1,95 @@
 """
 District module
-Copyright © 2025 MMT department-University of Cadiz
-Project Coder Pilar Monsalvete pilar.monsalvete@uca.es
+SPDX - License - Identifier: LGPL - 3.0 - or -later
+Copyright © 2022 Concordia CERC group
+Project Coder Guille Gutierrez guillermo.gutierrezmorote@concordia.ca
+Code contributors: Peter Yefi peteryefi@gmail.com
 """
+
+from __future__ import annotations
 
 import logging
 from typing import List, Union
 
+import pyproj
+from pyproj import Transformer
+
+from central_data_model.weather_data import WeatherData
 from central_data_model.building import Building
 from central_data_model.open_area import OpenArea
+from helpers.geometry_helper import GeometryHelper
+from helpers.location import Location
+from helpers.attributes.polygon import Polygon
 
 
 class District:
   """
-  This class models areas under study, containing any relevant city objets
+  District class models the district under study and its boundary conditions
   """
 
-  def __init__(self, srs_name, lower_corner=None, upper_corner=None):
-    self._city = None
+  def __init__(self, srs_name=None, location=None, polygon=None, boundaries_weather_data=None):
+    self._city_name = None
     self._srs_name = srs_name
-    self._lower_corner = lower_corner
-    self._upper_corner = upper_corner
-    self._name = None
+    self._location = location
+    self._polygon = polygon
+    self._boundaries_weather_data = boundaries_weather_data
+    self._micro_climate_weather_data = None
+    self._srs_name = srs_name
     self._buildings_dictionary = {}
     self._open_areas_dictionary = {}
     self._buildings = []
     self._open_areas = []
+    self._reference_coordinates = None
+
+  def _get_location(self) -> Location:
+    if self._location is None:
+      gps = pyproj.CRS('EPSG:4326')  # LatLon with WGS84 datum used by GPS units and Google Earth
+      try:
+        if self._srs_name in GeometryHelper.srs_transformations:
+          self._srs_name = GeometryHelper.srs_transformations[self._srs_name]
+        input_reference = pyproj.CRS(self._srs_name)  # Projected coordinate system from input data
+      except pyproj.exceptions.CRSError as err:
+        logging.error('Invalid projection reference system, please check the input data.')
+        raise pyproj.exceptions.CRSError from err
+      transformer = Transformer.from_crs(input_reference, gps)
+      coordinates = transformer.transform(self.polygon.center_of_gravity.coordinates[0],
+                                          self.polygon.center_of_gravity.coordinates[1])
+      self._location = GeometryHelper.get_location(coordinates[0], coordinates[1])
+    return self._location
 
   @property
-  def city(self):
+  def country_code(self):
     """
-    Get city to which the district belongs
-    :return: City
+    Get city country code
+    :return: str
     """
-    return self._city
+    return self._get_location().country
+
+  @property
+  def region_code(self):
+    """
+    Get city region name
+    :return: str
+    """
+    return self._get_location().region_code
+
+  @property
+  def time_zone(self) -> Union[None, float]:
+    """
+    Get city time_zone
+    :return: None or float
+    """
+    return self._get_location().time_zone
+
+  @property
+  def city_name(self):
+    """
+    Get name of the city to which the district belongs
+    :return: str
+    """
+    if self._city_name is None:
+      return self._get_location().city
+    return self._city_name
 
   @property
   def srs_name(self) -> Union[None, str]:
@@ -44,53 +100,36 @@ class District:
     return self._srs_name
 
   @property
-  def lower_corner(self) -> List[float]:
+  def boundaries_weather_data(self) -> WeatherData:
     """
-    Get district lower corner
-    :return: [x,y,z]
+    Get the weather data of the boundaries of the district
+    :return: WeatherData
     """
-    return self._lower_corner
+    return self._boundaries_weather_data
 
-  @lower_corner.setter
-  def lower_corner(self, value):
+  @boundaries_weather_data.setter
+  def boundaries_weather_data(self, value):
     """
-    Set district lower corner
-    :param value: [x,y,z]
+    Set the weather data of the boundaries of the district
+    :param value: WeatherData
     """
-    self._lower_corner = value
-
-  @property
-  def upper_corner(self) -> List[float]:
-    """
-    Get district upper corner
-    :return: [x,y,z]
-    """
-    return self._upper_corner
-
-  @upper_corner.setter
-  def upper_corner(self, value):
-    """
-    Set district upper corner
-    :param value: [x,y,z]
-    """
-    self._upper_corner = value
+    self._boundaries_weather_data = value
 
   @property
-  def name(self):
+  def micro_climate_weather_data(self) -> WeatherData:
     """
-    Get district name
-    :return: str
+    Get the district weather data effected by the micro-climate
+    :return: WeatherData
     """
-    return self._name
+    return self._micro_climate_weather_data
 
-  @name.setter
-  def name(self, value):
+  @micro_climate_weather_data.setter
+  def micro_climate_weather_data(self, value):
     """
-    Set district name
-    :param value:str
+    Set the district weather data effected by the micro-climate
+    :param value: WeatherData
     """
-    if value is not None:
-      self._name = str(value)
+    self._micro_climate_weather_data = value
 
   @property
   def buildings(self) -> Union[List[Building], None]:
@@ -178,3 +217,43 @@ class District:
         self._open_areas_dictionary = {}
         for i, _open_area in enumerate(self._open_areas):
           self._open_areas_dictionary[_open_area.name] = i
+
+  @property
+  def polygon(self) -> Polygon:
+    """
+    Get boundary foot-print polygon
+    :return: Polygon
+    """
+    return self._polygon
+
+  @polygon.setter
+  def polygon(self, value):
+    """
+    Set boundary foot-print polygon
+    :param value: Polygon
+    """
+    self._polygon = value
+
+  @property
+  def area(self):
+    """
+    Get ground area of the district (m2)
+    :return: float
+    """
+    return self.polygon.area
+
+  @property
+  def reference_coordinates(self):
+    """
+    Get reference coordinates to translate the points to the real geographical point in EPSG:2062
+    :return: [x, y, z]
+    """
+    return self._reference_coordinates
+
+  @reference_coordinates.setter
+  def reference_coordinates(self, value):
+    """
+    Set reference coordinates to translate the points to the real geographical point in EPSG:2062
+    :param value: [x, y, z]
+    """
+    self._reference_coordinates = value

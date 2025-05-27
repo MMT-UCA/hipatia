@@ -7,7 +7,7 @@ Project Coder Guille Gutierrez guillermo.gutierrezmorote@concordia.ca
 
 from abc import ABC
 
-from central_data_model.city import City
+from central_data_model.district import District
 from helpers.geometry_helper import GeometryHelper
 
 import helpers.constants as cte
@@ -75,10 +75,11 @@ class GeoJsonBase(ABC):
             percentage += percentage_ground * percentage_height
         wall.percentage_shared = percentage
 
-  def _polygon_coordinates_to_3d(self, polygon_coordinates, transformer):
+  def _polygon_coordinates_to_3d(self, polygon_coordinates, transformer, reference_coordinates):
     transformed_coordinates = ''
     for coordinate in polygon_coordinates:
       transformed = transformer.transform(coordinate[self._Y], coordinate[self._X])
+      transformed = [transformed[self._X] - reference_coordinates[self._X], transformed[self._Y] - reference_coordinates[self._Y]]
       self._save_bounds(transformed[self._X], transformed[self._Y])
       transformed_coordinates = f'{transformed_coordinates} {transformed[self._X]} {transformed[self._Y]} 0.0'
     return transformed_coordinates.lstrip(' ')
@@ -91,5 +92,5 @@ class GeoJsonBase(ABC):
   def upper_corner(self):
     return [self._max_x, self._max_y, self._max_z]
 
-  def city(self, hub_crs):
-    return City(self.lower_corner, self.upper_corner, hub_crs)
+  def district(self, hub_crs):
+    return District(hub_crs)

@@ -24,13 +24,12 @@ class Surface:
   Surface class
   """
 
-  def __init__(self, solid_polygon, perimeter_polygon, holes_polygons=None, name=None, surface_type=None,
-               building_name=None):
+  def __init__(self, solid_polygon, perimeter_polygon, holes_polygons=None, name=None, surface_type=None):
     self._type = surface_type
     self._name = name
     self._id = None
     self._azimuth = None
-    self._inclination = None
+    self._zenith_angle = None
     self._area = None
     self._lower_corner = None
     self._upper_corner = None
@@ -38,7 +37,6 @@ class Surface:
     self._perimeter_polygon = perimeter_polygon
     self._holes_polygons = holes_polygons
     self._solid_polygon = solid_polygon
-    self._building_name = building_name
     self._short_wave_reflectance = None
     self._long_wave_emittance = None
     self._inverse = None
@@ -138,23 +136,25 @@ class Surface:
   @property
   def azimuth(self):
     """
-    Get surface azimuth in radians (north = 0)
+    Get surface azimuth in radians growing clockwise (North = 0, East = pi/2, South = -pi, West = -pi/2)
     :return: float
     """
+    # todo: check the angle direction
     if self._azimuth is None:
       normal = self.perimeter_polygon.normal
-      self._azimuth = np.arctan2(normal[1], normal[0])
+      _azimuth = np.arctan2(normal[1], normal[0])   # Returns 0 = West
+      self._azimuth = _azimuth - np.pi/2  # for 0 = North
     return self._azimuth
 
   @property
-  def inclination(self):
+  def zenith_angle(self):
     """
-    Get surface inclination in radians (zenith = 0, horizon = pi/2)
+    Get surface zenith angle in radians (zenith = 0, horizon = pi/2)
     :return: float
     """
-    if self._inclination is None:
-      self._inclination = np.arccos(self.perimeter_polygon.normal[2])
-    return self._inclination
+    if self._zenith_angle is None:
+      self._zenith_angle = np.arccos(self.perimeter_polygon.normal[2])
+    return self._zenith_angle
 
   @property
   def type(self):
@@ -165,7 +165,7 @@ class Surface:
     :return: str
     """
     if self._type is None:
-      inclination_cos = math.cos(self.inclination)
+      inclination_cos = math.cos(self.zenith_angle)
       # 170 degrees
       if inclination_cos <= -0.98:
         self._type = 'Ground'
@@ -336,11 +336,3 @@ class Surface:
     :param value: float
     """
     self._percentage_shared = value
-
-  @property
-  def belonging_building_name(self):
-    """
-    Get the name of the building the surface belongs to
-    :return: str
-    """
-    return self._building_name

@@ -8,9 +8,10 @@ import numpy as np
 
 
 class GeoJsonLOD1(GeoJsonBase):
-  def __init__(self, transformer):
+  def __init__(self, transformer, reference_coordinates):
     self._transformer = transformer
-    self._parser = GeoJsonLOD0(self._transformer)
+    self._reference_coordinates = reference_coordinates
+    self._parser = GeoJsonLOD0(self._transformer, self._reference_coordinates)
 
   def parse(self, geometry, building_name, building_aliases, function, usages, year_of_construction, extrusion_height, storey_height):
     self._max_z = max(self._max_z, extrusion_height)

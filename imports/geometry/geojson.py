@@ -9,7 +9,6 @@ import uuid
 
 from pyproj import Transformer
 
-from central_data_model.city import City
 from central_data_model.district import District
 from imports.geometry.geojson_classes.geojson_lod0 import GeoJsonLOD0
 from imports.geometry.geojson_classes.geojson_lod1 import GeoJsonLOD1
@@ -38,10 +37,9 @@ class Geojson:
       self._hub_crs = 'epsg:2062'
     self._transformer = Transformer.from_crs('epsg:4326', self._hub_crs)
 
-    self._city = None
-    self._districts = []
+    self._district = None
+    self._district_polygon = None
     self._buildings = []
-    self._boundaries = []
 
     self._aliases_field = aliases_field
     self._extrusion_height_field = extrusion_height_field
@@ -56,14 +54,16 @@ class Geojson:
       self._geojson = json.loads(json_file.read())
 
   @property
-  def city(self) -> City:
+  def district(self) -> District:
     """
     Get city out of a Geojson file
     """
-    parser = GeoJsonLOD0(self._transformer)
-    lod1_parser = GeoJsonLOD1(self._transformer)
+    # todo: re-structure so the reference comes automatically from the geojson read
+    reference_coordinates = [374480.491975, 218839.658365, 0]
+    parser = GeoJsonLOD0(self._transformer, reference_coordinates)
+    lod1_parser = GeoJsonLOD1(self._transformer, reference_coordinates)
     lod = 0
-    if self._city is None:
+    if self._district is None:
       for feature in self._geojson['features']:
         extrusion_height = None
         storey_height = None
@@ -121,13 +121,19 @@ class Geojson:
                 usages,
                 year_of_construction))
             elif type_of_feature == 'boundaries':
-              self._boundaries.append(parser.parse(
-                geometry,
-                building_name,
-                building_aliases,
-                function,
-                usages,
-                year_of_construction))
+              if self._district_polygon is None:
+                self._district_polygon = parser.parse(
+                  geometry,
+                  building_name,
+                  building_aliases,
+                  function,
+                  usages,
+                  year_of_construction,
+                  extrusion_height,
+                  storey_height)
+              else:
+                # todo: catch the error
+                print("More than one polygon defining the district!!")
             else:
               # todo: will we have more types of features??
               pass
@@ -144,8 +150,8 @@ class Geojson:
                 extrusion_height,
                 storey_height))
           elif type_of_feature == 'boundaries':
-            self._boundaries.append(
-              parser.parse(
+            if self._district_polygon is None:
+              self._district_polygon = parser.parse(
                 geometry,
                 building_name,
                 building_aliases,
@@ -153,19 +159,18 @@ class Geojson:
                 usages,
                 year_of_construction,
                 extrusion_height,
-                storey_height))
+                storey_height)
+            else:
+              # todo: catch the error
+              print("More than one polygon defining the district!!")
           else:
             # todo: will we have more types of features??
             pass
-    self._city = parser.city(self._hub_crs)
-    self._districts = [District(self._hub_crs)]
-    # todo: redesign after next meeting!!!!!!!!!
-    _lower_corner = self._boundaries[0].lower_corner
-    self._districts[0].lower_corner = _lower_corner
-    # todo: building_coordinates must be readjusted BEFORE creating the polygons
+    self._district = parser.district(self._hub_crs)
+    self._district.reference_coordinates = reference_coordinates
+    self._district.polygon = self._district_polygon.surfaces[0].perimeter_polygon
     for building in self._buildings:
       # Do not include "small building-like structures" to buildings
       if building.floor_area >= 25:
-        self._districts[0].add_building(building)
-    self._city.add_district(self._districts[0])
-    return self._city
+        self._district.add_building(building)
+    return self._district

@@ -21,6 +21,7 @@ from trimesh import Trimesh
 
 from helpers.attributes.plane import Plane
 from helpers.attributes.point import Point
+import helpers.constants as cte
 
 
 class Polygon:
@@ -40,6 +41,7 @@ class Polygon:
     self._faces = None
     self._plane = None
     self._center_of_gravity = None
+    self._minimum_coordinates = None
 
   @property
   def points(self) -> List[Point]:
@@ -436,7 +438,11 @@ class Polygon:
     return centroid
 
   @property
-  def center_of_gravity(self) -> Point:
+  def center_of_gravity(self):
+    """
+    Get the centroid understood as the center of gravity of the polygon
+    :return: [x, y, z]
+    """
     area_tot = 0
     area_times_x = 0
     area_times_y = 0
@@ -447,5 +453,23 @@ class Polygon:
       area_times_x += triangle.area * centroid[0]
       area_times_y += triangle.area * centroid[1]
       area_times_z += triangle.area * centroid[2]
-    self._center_of_gravity = Point([area_times_x/area_tot, area_times_y/area_tot, area_times_z/area_tot])
+    self._center_of_gravity = [area_times_x/area_tot, area_times_y/area_tot, area_times_z/area_tot]
     return self._center_of_gravity
+
+  @property
+  def minimum_coordinates(self):
+    """
+    Get the minimum coordinates as the total minimum X, the total minimum Y and the total minimum Z of the polygon
+    :return: [x, y, z]
+    """
+    _min_x = cte.MAX_FLOAT
+    _min_y = cte.MAX_FLOAT
+    _min_z = cte.MAX_FLOAT
+    for coordinate in self.coordinates:
+      if coordinate[0] < _min_x:
+        _min_x = coordinate[0]
+      if coordinate[1] < _min_y:
+        _min_y = coordinate[1]
+      if coordinate[2] < _min_z:
+        _min_z = coordinate[2]
+    return [_min_x, _min_y, _min_z]
