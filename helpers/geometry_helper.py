@@ -296,6 +296,7 @@ class GeometryHelper:
     country = 'Unknown'
     city = 'Unknown'
     region_code = 'Unknown'
+    time_zone = 'Unknown'
     with open(_data_path, 'r', encoding='utf-8') as file:
       for _, line in enumerate(file):
         fields = line.split('\t')
@@ -312,8 +313,7 @@ class GeometryHelper:
           country = file_country_code
           city = file_city_name
           region_code = f'{file_country_code}.{admin1_code}.{admin2_code}'
-    return Location(country, city, region_code, latitude, longitude)
-    # todo, it seems that this is not coherent with the class Location: country, city, region_code, time_zone
+    return Location(country, city, region_code, time_zone)
 
   @staticmethod
   def distance_between_points(vertex1, vertex2):
