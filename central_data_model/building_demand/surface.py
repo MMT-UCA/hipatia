@@ -139,11 +139,10 @@ class Surface:
     Get surface azimuth in radians growing clockwise (North = 0, East = pi/2, South = -pi, West = -pi/2)
     :return: float
     """
-    # todo: check the angle direction
     if self._azimuth is None:
       normal = self.perimeter_polygon.normal
-      _azimuth = np.arctan2(normal[1], normal[0])   # Returns 0 = West
-      self._azimuth = _azimuth - np.pi/2  # for 0 = North
+      _azimuth = np.arctan2(normal[1], normal[0])   # Returns 0 = East
+      self._azimuth = np.pi/2 - _azimuth  # for 0 = North
     return self._azimuth
 
   @property

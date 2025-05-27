@@ -30,7 +30,7 @@ class TestHipatiaTemplate(TestCase):
     """
     Hipatia template for any use
     """
-    # 1. file with the geometrical information+
+    # 1. file with the geometrical information
     file = Path(self._example_path / 'buildings.geojson').resolve()
     # 2. The data model is firstly created here with geometrical information
     district = GeometryFactory('geojson',
@@ -47,4 +47,7 @@ class TestHipatiaTemplate(TestCase):
       this_module_does_nothing.do_nothing(building.name)
 
     print(district.reference_coordinates)
-    print(f'District area = {district.area} m2')
+    for building in district.buildings:
+      for surface in building.surfaces:
+        print(surface.perimeter_polygon.coordinates)
+      print(f'District area = {district.area} m2')
