@@ -16,7 +16,7 @@ class District:
   This class models areas under study, containing any relevant city objets
   """
 
-  def __init__(self, srs_name, lower_corner, upper_corner):
+  def __init__(self, srs_name, lower_corner=None, upper_corner=None):
     self._city = None
     self._srs_name = srs_name
     self._lower_corner = lower_corner
@@ -51,6 +51,14 @@ class District:
     """
     return self._lower_corner
 
+  @lower_corner.setter
+  def lower_corner(self, value):
+    """
+    Set district lower corner
+    :param value: [x,y,z]
+    """
+    self._lower_corner = value
+
   @property
   def upper_corner(self) -> List[float]:
     """
@@ -58,6 +66,14 @@ class District:
     :return: [x,y,z]
     """
     return self._upper_corner
+
+  @upper_corner.setter
+  def upper_corner(self, value):
+    """
+    Set district upper corner
+    :param value: [x,y,z]
+    """
+    self._upper_corner = value
 
   @property
   def name(self):

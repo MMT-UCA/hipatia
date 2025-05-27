@@ -28,17 +28,16 @@ class GeometryFactory:
     self._function_field = function_field
     self._type_field = type_field
 
-  @property
   def _geojson(self) -> City:
     """
     Enrich the city by using Geojson information as data source
     :return: City
     """
     return Geojson(self._path,
-                   self._height_field,
-                   self._year_of_construction_field,
-                   self._function_field,
-                   self._type_field).city
+                   extrusion_height_field=self._height_field,
+                   year_of_construction_field=self._year_of_construction_field,
+                   function_field=self._function_field,
+                   type_of_feature_field=self._type_field).city
 
   @property
   def city(self) -> City:
@@ -46,4 +45,7 @@ class GeometryFactory:
     Enrich the city given to the class using the class given handler
     :return: City
     """
-    return getattr(self, self._file_type, lambda: None)
+    _handlers = {
+      '_geojson': self._geojson
+    }
+    return _handlers[self._file_type]()
