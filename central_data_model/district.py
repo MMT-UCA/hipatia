@@ -24,7 +24,7 @@ from helpers.attributes.polygon import Polygon
 
 class District:
   """
-  District class models the district under study and its boundary conditions
+  District class models the district under study and its boundary conditions AAAAAAAAAA
   """
 
   def __init__(self, srs_name=None, location=None, polygon=None, boundaries_weather_data=None):
