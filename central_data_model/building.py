@@ -3,7 +3,7 @@ Building module
 SPDX - License - Identifier: LGPL - 3.0 - or -later
 Copyright © 2022 Concordia CERC group
 Project Coder Guille Gutierrez guillermo.gutierrezmorote@concordia.ca
-Code contributors: Pilar Monsalvete Alvarez de Uribarri pilar.monsalvete@concordia.ca
+Code contributors: Pilar Monsalvete Alvarez de Uribarri pilar.monsalvete@uca.es
 """
 
 import logging
